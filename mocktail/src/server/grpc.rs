@@ -63,6 +63,9 @@ impl GrpcMockServer {
 
             // Collect request body
             let body = req.into_body().collect().await.unwrap().to_bytes();
+            println!("MOCKTAIL: path - {:#?}", path);
+            println!("MOCKTAIL: body - {:#?}", body);
+            println!("MOCKTAIL: mocks - {:#?}", state.mocks);
 
             // Match to mock and send response
             if let Some(mock) = state.mocks.find(&path, &body) {

@@ -28,7 +28,11 @@ impl MockSet {
     pub fn find(&self, path: &MockPath, body: &[u8]) -> Option<&Mock> {
         self.0
             .get(path)
-            .and_then(|mocks| mocks.iter().find(|&mock| mock.request.body() == body))
+            .and_then(|mocks| mocks.iter().find(|&mock| {
+                // println!("REQUEST BODY: {:#?}", mock.request.body());
+                // println!("MOCK BODY: {:#?}", body);
+                mock.request.body() == body
+            }))
     }
 }
 

@@ -53,7 +53,12 @@ impl PartialEq<[u8]> for MockBody {
     fn eq(&self, other: &[u8]) -> bool {
         match self {
             MockBody::Empty => other.is_empty(),
-            MockBody::Full(bytes) => bytes == other,
+            MockBody::Full(bytes) => {
+                println!("HEY!");
+                println!("LEFT: {:#?}", bytes.to_vec());
+                println!("RIGHT: {:#?}", other);
+                bytes == other
+            },
             MockBody::Stream(data) => data.concat() == other,
         }
     }

@@ -113,9 +113,12 @@ impl Service<Request<Incoming>> for HttpMockSvc {
                     .unwrap();
                 *response.headers_mut() = mock.response.headers().clone();
                 // TODO: error message
+                let response_body = mock.response.body();
+                debug!("HTTP RESPONSE\nresponse={response:#?}\nresponse_body={response_body:#?}\n");
                 Ok(response)
             } else {
                 // Request not matched to mock, send error response
+                debug!(?path, ?body, "NO MATCH FOR HTTP REQUEST");
                 Ok(Response::builder()
                     .status(StatusCode::NOT_FOUND)
                     .body(empty_body())

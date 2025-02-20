@@ -63,6 +63,7 @@ impl GrpcMockServer {
 
             // Collect request body
             let body = req.into_body().collect().await.unwrap().to_bytes();
+            debug!(?body, "gRPC REQUEST BODY");
 
             // Match to mock and send response
             if let Some(mock) = state.mocks.find(&path, &body) {
@@ -73,9 +74,12 @@ impl GrpcMockServer {
                 if let Some(error) = &mock.response.error {
                     builder = builder.header("grpc-message", error);
                 }
-                Ok(builder.body(mock.response.body().to_tonic_boxed()).unwrap())
+                let response = builder.body(mock.response.body().to_tonic_boxed()).unwrap();
+                debug!("gRPC RESPONSE: {response:#?}\nBODY: {:#?}", mock.response.body());
+                Ok(response)
             } else {
                 // Request not matched to mock, send error response
+                debug!(?path, ?body, "NO MATCH FOR gRPC REQUEST");
                 Ok(Response::builder()
                     .header("content-type", "application/grpc")
                     .header("grpc-status", Code::NotFound as i32)
